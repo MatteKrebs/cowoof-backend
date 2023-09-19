@@ -31,4 +31,4 @@ const groupSchema = new Schema(
 
 const Group = model("Group", groupSchema);
 
-module.exports = Pet;
+module.exports = Group;

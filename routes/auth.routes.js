@@ -18,17 +18,19 @@ const saltRounds = 10;
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { userEmail, password, userName, locationCountry, locationCity, locationPostalCode, availabilityNeeded, availabilityToHelp } = req.body;
+
+ // console.log('availabilityNeeded', availabilityNeeded, 'availabilityToHelp', availabilityToHelp)
 
   // Check if email or password or name are provided as empty strings
-  if (email === "" || password === "" || name === "") {
-    res.status(400).json({ message: "Provide email, password and name" });
+  if (userEmail === "" || password === "" || userName === "" || locationCountry === "" || locationCity === "" || locationPostalCode === "") {
+    res.status(400).json({ message: "Provide email, password, name, and location." });
     return;
   }
 
   // This regular expression check that the email is of a valid format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  if (!emailRegex.test(email)) {
+  if (!emailRegex.test(userEmail)) {
     res.status(400).json({ message: "Provide a valid email address." });
     return;
   }
@@ -44,11 +46,11 @@ router.post("/signup", (req, res, next) => {
   }
 
   // Check the users collection if a user with the same email already exists
-  User.findOne({ email })
+  User.findOne({ userEmail })
     .then((foundUser) => {
       // If the user with the same email already exists, send an error response
       if (foundUser) {
-        res.status(400).json({ message: "User already exists." });
+        res.status(400).json({ message: "Re-try logging in!" });
         return;
       }
 
@@ -58,15 +60,25 @@ router.post("/signup", (req, res, next) => {
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      const data = { 
+        userEmail, 
+        password: hashedPassword, 
+        userName, 
+        locationCountry,
+        locationCity, 
+        locationPostalCode, 
+        availabilityNeeded,
+        availabilityToHelp
+      };
+      return User.create(data);
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, name, _id } = createdUser;
+      const { userEmail, userName, _id } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { email, name, _id };
+      const user = { userEmail, userName, _id };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });

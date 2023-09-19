@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
-    email: {
+    userEmail: {
       type: String,
       required: [true, "Email is required."],
       unique: true,
@@ -12,24 +12,30 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Password is required."],
     },
-    name: {
+    userName: {
       type: String,
       required: [true, "Name is required."],
     },
-    location: {
-        country: {
+    locationCountry: {
           type: String,
-          required: [true, 'Country is required.'],
+          // required: [true, 'Country is required.'],
         },
-        city: {
+    locationCity: {
           type: String,
-          required: [true, 'City is required.'],
+          // required: [true, 'City is required.'],
         },
-        postalCode: {
-          type: String,
-          required: [true, 'Postal code is required.'],
+    loctionPostalCode: {
+          type: Number,
+          // required: [true, 'Postal code is required.'],
         },
-      },
+    availabilityNeeded: {
+      type: [String],
+      enum: ['Morning', 'Afternoon', 'Evening', 'Night', 'All Day', 'Overnight']
+    },
+    availabilityToHelp: {
+      type: [String],
+      enum: ['Morning', 'Afternoon', 'Evening', 'Night', 'All Day', 'Overnight']
+    },
     userImage: {
       type: String,
       default: '/Users/Matt/Desktop/Ironhack/woof-practice/server/public/images/CW-user-avatar.png'

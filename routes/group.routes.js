@@ -39,7 +39,7 @@ router.post('/groups', (req, res) => {
   });
   
   // Update a group by ID
-  router.patch('/groups/:id', (req, res) => {
+  router.put('/groups/:id', (req, res) => {
     Group.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then(group => {
         if (!group) {
