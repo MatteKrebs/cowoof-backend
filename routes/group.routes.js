@@ -6,11 +6,7 @@ const User = require('../models/User.model');
 const Pet = require('../models/Pet.model');
 const Group = require('../models/Group.model');
 
-// //Create new group GET
-// router.get("/groups", (req, res, next) => {
-//     res.json("All good in here");
-//   });
-  
+
 // Create a new group
 router.post('/groups', (req, res) => {
     Group.create(req.body)

@@ -24,7 +24,7 @@ const userSchema = new Schema(
           type: String,
           // required: [true, 'City is required.'],
         },
-    loctionPostalCode: {
+    locationPostalCode: {
           type: Number,
           // required: [true, 'Postal code is required.'],
         },
