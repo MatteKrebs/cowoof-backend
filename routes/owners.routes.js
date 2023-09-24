@@ -5,7 +5,7 @@ const User = require("../models/User.model")
 
 // Read all owners
 router.get('/owners', (req, res) => {
-  Owner.find()
+  User.find()
     .then((owners) => {
       res.status(200).json(owners);
     })
@@ -16,7 +16,7 @@ router.get('/owners', (req, res) => {
 
 // Read a single owner by ID
 router.get('owners/:id', (req, res) => {
-  Owner.findById(req.params.id)
+  User.findById(req.params.id)
     .then((owner) => {
       if (!owner) {
         res.status(404).json({ message: 'Owner not found' });
@@ -31,7 +31,7 @@ router.get('owners/:id', (req, res) => {
 
 // Update an owner by ID
 router.put('/:id', (req, res) => {
-  Owner.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  User.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then((updatedOwner) => {
       if (!updatedOwner) {
         res.status(404).json({ message: 'Owner not found' });
@@ -46,7 +46,7 @@ router.put('/:id', (req, res) => {
 
 // Delete an owner by ID
 router.delete('/:id', (req, res) => {
-  Owner.findByIdAndDelete(req.params.id)
+  User.findByIdAndDelete(req.params.id)
     .then((deletedOwner) => {
       if (!deletedOwner) {
         res.status(404).json({ message: 'Owner not found' });

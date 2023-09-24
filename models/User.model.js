@@ -40,6 +40,9 @@ const userSchema = new Schema(
       type: String,
       default: '/Users/Matt/Desktop/Ironhack/woof-practice/server/public/images/CW-user-avatar.png'
     },
+    userDescription: {
+      type: String
+    },
     usersPetId: {
       type: [Schema.Types.ObjectId], ref: 'Pet'
     },

@@ -20,7 +20,7 @@ const groupRoutes = require("./routes/group.routes");
 app.use("/groups", groupRoutes);
 
 const petRoutes = require("./routes/pet.routes");
-app.use("/pets", petRoutes);
+app.use("/api", petRoutes);
 
 const ownerRoutes = require("./routes/owners.routes");
 app.use("/owners", ownerRoutes);

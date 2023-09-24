@@ -9,7 +9,10 @@ const Group = require('../models/Group.model');
 
 // Create a new pet
 router.post('/pets', (req, res) => {
-    Pet.create(req.body)
+
+    const { petName, petAge, petAbout, petImage, ownerId} = req.body;
+    
+    Pet.create({ petName, petAge, petAbout, petImage, ownerId})
       .then(newPet => res.status(201).json(newPet))
       .catch(err => console.log(err));
   });
