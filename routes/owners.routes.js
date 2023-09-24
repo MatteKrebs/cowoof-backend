@@ -4,7 +4,7 @@ const User = require("../models/User.model")
 
 
 // Read all owners
-router.get('/owners', (req, res) => {
+router.get('/', (req, res) => {
   User.find()
     .then((owners) => {
       res.status(200).json(owners);
@@ -15,7 +15,7 @@ router.get('/owners', (req, res) => {
 });
 
 // Read a single owner by ID
-router.get('owners/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   User.findById(req.params.id)
     .then((owner) => {
       if (!owner) {
