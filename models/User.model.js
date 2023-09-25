@@ -25,7 +25,7 @@ const userSchema = new Schema(
           // required: [true, 'City is required.'],
         },
     locationPostalCode: {
-          type: Number,
+          type: String,
           // required: [true, 'Postal code is required.'],
         },
     availabilityNeeded: {
@@ -38,7 +38,6 @@ const userSchema = new Schema(
     },
     userImage: {
       type: String,
-      default: '/Users/Matt/Desktop/Ironhack/woof-practice/server/public/images/CW-user-avatar.png'
     },
     userDescription: {
       type: String

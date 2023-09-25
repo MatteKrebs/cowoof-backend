@@ -22,7 +22,8 @@ router.get('/:id', (req, res) => {
         res.status(404).json({ message: 'Owner not found' });
         return;
       }
-      res.status(200).json(owner);
+      const { userEmail, availabilityNeeded, availabilityToHelp, userName, usersGroups, userDescription, _id, usersPetId, locationCity, locationPostalCode, locationCountry } = owner;
+      res.status(200).json({ userEmail, availabilityNeeded, availabilityToHelp, userName, usersGroups, userDescription, _id, usersPetId, locationCity, locationPostalCode, locationCountry });
     })
     .catch((error) => {
       res.status(500).json({ message: 'Failed to fetch owner', error: error.message });
