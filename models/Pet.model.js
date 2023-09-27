@@ -16,7 +16,7 @@ const petSchema = new Schema(
     },
     petImage: {
       type: String,
-      default: '/Users/Matt/Desktop/Ironhack/woof-practice/server/public/images/CW-user-avatar.png'
+      default: 'https://i.pravatar.cc/300'
     },
     ownerId: {
       type: Schema.Types.ObjectId, ref: 'User' 

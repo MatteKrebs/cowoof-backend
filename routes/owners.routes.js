@@ -6,7 +6,7 @@ const User = require("../models/User.model")
 // Read all owners by city and paginate them
 router.get('/', (req, res) => {
   const { city, page } = req.query;
-  if(!city || !page) {
+  if (!city || !page) {
     res.status(400).json({ message: 'Location city and page number are required' });
     return;
   }
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
   const currentPage = page;
 
   const query = { locationCity: city };
-  const options = { 
+  const options = {
     page: currentPage,
     limit: pageSize,
     sort: { createdAt: -1 }
@@ -31,19 +31,29 @@ router.get('/', (req, res) => {
 });
 
 // Read a single owner by ID
-router.get('/:id', (req, res) => {
-  User.findById(req.params.id)
-    .then((owner) => {
-      if (!owner) {
-        res.status(404).json({ message: 'Owner not found' });
-        return;
-      }
-      const { userEmail, availabilityNeeded, availabilityToHelp, userName, usersGroups, userDescription, _id, usersPetId, locationCity, locationPostalCode, locationCountry } = owner;
-      res.status(200).json({ userEmail, availabilityNeeded, availabilityToHelp, userName, usersGroups, userDescription, _id, usersPetId, locationCity, locationPostalCode, locationCountry });
-    })
-    .catch((error) => {
-      res.status(500).json({ message: 'Failed to fetch owner', error: error.message });
-    });
+router.get('/:id', async (req, res) => {
+  const { with_pets } = req.query;
+  let owner = null;
+
+  if (with_pets) {
+    owner = await User.findById(req.params.id).populate('usersPetId');
+  } else {
+    owner = await User.findById(req.params.id);
+  }
+
+  try {
+    if (!owner) {
+      return res.status(404).json({ message: 'Owner not found' });
+    }
+  }
+  catch (error) {
+    res.status(500).json({ message: 'Failed to fetch owner', error: error.message });
+  }
+
+  const returnOwner = {...owner._doc};
+  delete returnOwner.password;
+
+  res.status(200).json(returnOwner);
 });
 
 // Update an owner by ID
