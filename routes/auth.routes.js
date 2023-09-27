@@ -96,7 +96,7 @@ router.post("/login", (req, res, next) => {
   }
 
   // Check the users collection if a user with the same email exists
-  User.findOne({ email })
+  User.findOne({ userEmail: email })
     .then((foundUser) => {
       if (!foundUser) {
         // If the user is not found, send an error response
@@ -106,7 +106,7 @@ router.post("/login", (req, res, next) => {
 
       // Compare the provided password with the one saved in the database
       const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
-
+      console.log(password + " " + foundUser.password);
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
         const { _id, userEmail, userName } = foundUser;

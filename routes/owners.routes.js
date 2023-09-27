@@ -3,9 +3,25 @@ const router = express.Router();
 const User = require("../models/User.model")
 
 
-// Read all owners
+// Read all owners by city and paginate them
 router.get('/', (req, res) => {
-  User.find()
+  const { city, page } = req.query;
+  if(!city || !page) {
+    res.status(400).json({ message: 'Location city and page number are required' });
+    return;
+  }
+
+  const pageSize = 10;
+  const currentPage = page;
+
+  const query = { locationCity: city };
+  const options = { 
+    page: currentPage,
+    limit: pageSize,
+    sort: { createdAt: -1 }
+  };
+
+  User.paginate(query, options)
     .then((owners) => {
       res.status(200).json(owners);
     })
