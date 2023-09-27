@@ -6,9 +6,10 @@ const User = require('../models/User.model');
 const Pet = require('../models/Pet.model');
 const Group = require('../models/Group.model');
 
+const fileUploader = require('../config/cloudinary.config');
 
 // Create a new pet
-router.post('/pets', (req, res) => {
+router.post('/pets', fileUploader.single("petImage") ,(req, res) => {
 
     const { petName, petAge, petAbout, petImage, ownerId} = req.body;
     
