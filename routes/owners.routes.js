@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require("../models/User.model")
 
-
 // Read all owners by city and paginate them
 router.get('/', (req, res) => {
   const { city, page } = req.query;
@@ -18,7 +17,8 @@ router.get('/', (req, res) => {
   const options = {
     page: currentPage,
     limit: pageSize,
-    sort: { createdAt: -1 }
+    sort: { createdAt: -1 },
+    select: 'name email locationCity locationState image availabilityToHelp availabilityNeeded'
   };
 
   User.paginate(query, options)
@@ -32,14 +32,18 @@ router.get('/', (req, res) => {
 
 // Read a single owner by ID
 router.get('/:id', async (req, res) => {
-  const { with_pets } = req.query;
-  let owner = null;
+  const { with_pets, with_groups } = req.query;
+  const ownerId = req.params.id
+  let baseQuery = User.findById(ownerId, '-password');
 
   if (with_pets) {
-    owner = await User.findById(req.params.id).populate('usersPetId');
-  } else {
-    owner = await User.findById(req.params.id);
+    baseQuery = baseQuery.populate('usersPetId');
+  } 
+  if (with_groups) {
+    baseQuery = baseQuery.populate('usersGroups');
   }
+
+  const owner = await baseQuery.exec();
 
   try {
     if (!owner) {
@@ -50,10 +54,7 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch owner', error: error.message });
   }
 
-  const returnOwner = {...owner._doc};
-  delete returnOwner.password;
-
-  res.status(200).json(returnOwner);
+  res.status(200).json(owner);
 });
 
 // Update an owner by ID
