@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { isAuthenticated } = require("./middleware/jwt.middleware")
+const isAuthenticated = require("./middleware/jwt.middleware")
 const connectDb = require("./db");
 
 connectDb();
@@ -14,7 +14,9 @@ require("./config")(app);
 // Authenticate middleware
 app.use(isAuthenticated.unless({ path: ['/auth/signup', '/auth/login'] }));
 app.use(function (err, req, res, next) {
+    console.error(err);
     if (err.name === "UnauthorizedError") {
+        console.error(err);
         res.status(401).json({"message": "Server error"});
     } else {
         next(err);
@@ -39,5 +41,7 @@ app.use("/owners", ownerRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
+
+
 
 module.exports = app;

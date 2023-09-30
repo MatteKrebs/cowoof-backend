@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "debug": "nodemon --inspect server.js",
     "seedDb": "node -r dotenv/config db/seeder.js"
   },
   "dependencies": {

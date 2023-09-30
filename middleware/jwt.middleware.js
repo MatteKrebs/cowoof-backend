@@ -6,6 +6,11 @@ const isAuthenticated = jwt({
   algorithms: ["HS256"],
   requestProperty: "authUser",
   getToken: getTokenFromHeaders,
+  credentialsRequired: true,
+  onExpired: async (req, err) => {
+    if (new Date() - err.inner.expiredAt < 5000) { return;}
+    throw err;
+  }
 });
 
 // Function used to extract the JWT token from the request's 'Authorization' Headers
@@ -24,6 +29,4 @@ function getTokenFromHeaders(req) {
 }
 
 // Export the middleware so that we can use it to create protected routes
-module.exports = {
-  isAuthenticated,
-};
+module.exports = isAuthenticated;

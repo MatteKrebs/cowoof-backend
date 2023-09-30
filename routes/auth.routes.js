@@ -10,9 +10,6 @@ const jwt = require("jsonwebtoken");
 // Require the User model in order to interact with the database
 const User = require("../models/User.model");
 
-// Require necessary (isAuthenticated) middleware in order to control access to specific routes
-const { isAuthenticated } = require("../middleware/jwt.middleware.js");
-
 // How many rounds should bcrypt run the salt (default - 10 rounds)
 const saltRounds = 10;
 
@@ -106,7 +103,6 @@ router.post("/login", (req, res, next) => {
 
       // Compare the provided password with the one saved in the database
       const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
-      console.log(password + " " + foundUser.password);
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
         const { _id, userEmail, userName } = foundUser;
@@ -130,12 +126,9 @@ router.post("/login", (req, res, next) => {
 });
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
-router.get("/verify", isAuthenticated, (req, res, next) => {
+router.get("/verify", (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and is made available on `req.payload`
-  // console.log(`req.payload`, req.payload);
-
-  // Send back the token payload object containing the user data
   res.status(200).json(req.payload);
 });
 
