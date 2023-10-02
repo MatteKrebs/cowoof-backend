@@ -3,16 +3,36 @@ const express = require("express");
 const router = express.Router();
 const Pet = require('../models/Pet.model');
 const fileUploader = require('../config/cloudinary.config');
+const User = require("../models/User.model");
 
 // Create a new pet
 router.post('/', fileUploader.single("petImage"), async (req, res) => {
-  const { petName, petAge, petAbout, ownerId } = req.body;
+  const { petName, petAge, petAbout } = req.body;
+
+  // Perform validation here
+  if(!petName || !petAge || !petAbout) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+  const userId = req.authUser._id;
+  const petPayload = new Pet({ petName, petAge, petAbout});
 
   try {
-    console.log(req.body);
-    console.log(req.petImage);
+    if(req.file) {
+      petPayload["petImage"] = req.file.path;
+      console.log("Image found: ", req.file.path);
+    }
 
-    const createdPet = await Pet.create({ petName, petAge, petAbout, petImage: req.file.path, ownerId })
+    const createdPet = await petPayload.save(petPayload)
+    console.log("Pet created: ", createdPet);
+    // Remove existing pets and add the new pet to the user
+    User.findByIdAndUpdate(userId, { $set: { usersPetId: createdPet._id }})
+    .then((user) => {
+      console.log("User updated: ", user);
+    })
+    .catch((error) => {
+      console.log("Failed to update user: ", error);
+    });
+
     return res.status(201).json(createdPet);
   }
   catch (error) {
@@ -44,13 +64,20 @@ router.get('/:id', (req, res) => {
 // Update a pet by ID
 router.patch('/:id', fileUploader.single("petImage"), async (req, res) => {
   const { petName, petAge, petAbout } = req.body;
+  const petPayload = { petName, petAge, petAbout };
+
   // Perform validation here
   if(!petName || !petAge || !petAbout) {
     return res.status(400).json({ message: 'All fields are required' });
   }
+
+  if(req.file) {
+    petPayload["petImage"] = req.file.path;
+    console.log("Image found: ", req.file.path);
+  }
   
   try {
-    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, petPayload, { new: true })
     if (!updatedPet) {
       throw new Error('Pet not found');
     }
